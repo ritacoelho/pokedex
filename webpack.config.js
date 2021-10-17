@@ -1,10 +1,16 @@
+var path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const htmlPlugin = new HtmlWebPackPlugin({
- template: "./src/index.html",
+ template: "./public/index.html",
  filename: "./index.html",
- favicon: "./src/favicon.ico"
+ favicon: "./public/favicon.ico"
 });
 module.exports = {
+  devServer: {
+    static: {directory: path.join(__dirname, 'public')},
+    compress: true,
+    port: 8080
+  },
   mode: 'development',
     module: {
       rules: [
@@ -21,25 +27,11 @@ module.exports = {
         },
         {
           test: /\.(woff|woff2|eot|ttf)(\?[a-z0-9=.]+)?$/,
-          use: [{
-            loader: 'url-loader?limit=100000',
-            options: {
-              esModule: false
-              } 
-            }
-          ]
+          use: ['url-loader?limit=100000']
         },
         {
           test: /\.(png|jpe?g|gif|svg|ico)$/i,
-          use: [{
-            loader: 'file-loader?name=[name].[ext]',
-            /* options: {
-              outputPath: 'images/',
-              name: '[name].[ext]',
-              esModule: false
-              }  */
-            }
-          ]
+          use: ['file-loader?name=[name].[ext]']
         }
       ]
     },

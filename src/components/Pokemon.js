@@ -39,8 +39,8 @@ class Pokemon extends Component {
                     <div className="poke-id">#{this.state.details.id}</div>
                     <CaptureButton captured={this.props.isCaptured} captureFn={(e) => this.props.capture(e, this.props.name)}/>
                 </div>
-                {this.state.details.sprites ? <img src={this.state.details.sprites.front_default} alt={this.state.details.name}></img> : null}
-                <div style={{"textAlign" : "center"}}>{this.props.name.charAt(0).toUpperCase() + this.props.name.slice(1)}</div>
+                {this.state.details.sprites ? <img style={{"maxHeight":"96px"}} src={this.state.details.sprites.front_default} alt={this.state.details.name}></img> : null}
+                <div style={{"textAlign" : "center", "fontSize" : "small"}}>{this.props.name.charAt(0).toUpperCase() + this.props.name.slice(1)}</div>
             </main>
         )
     }
