@@ -2,8 +2,6 @@ import React from 'react';
 
 import '../css/Misc.css';
 
-
-
 const FilterBar = ({filter, setFilter}) => {
     return(
         <div className={"control-bar"}>

@@ -16,6 +16,8 @@
     0 10px 12px rgba(0, 0, 0, 0.12)
     ;
     font-weight: 500;
+    font-size: small;
+    text-align: center;
 }
 
 .selected-pokemon-card{
@@ -55,7 +57,13 @@
 }
 
 .poke-id{
-    font-size: small;
     font-weight: 500;
     margin-left: 2px;
+}
+
+.loading{
+    height: 96px;
+    display: flex;
+    align-items: center;
+    color: var(--primary-blue);
 }

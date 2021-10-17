@@ -36,6 +36,7 @@ class App extends Component {
         this.getPokemon();
     }
 
+    /* Fetch 20 Pokemon at a time */
     getPokemon(){
         fetch('https://pokeapi.co/api/v2/pokemon/?limit=20&offset=' + this.state.offset)
         .then(response => response.json())
@@ -49,9 +50,15 @@ class App extends Component {
             this.setState({error: "There has been an issue fetching pokemon."})
         });
     }
+    
+    showMore(){ 
+        this.setState({offset : this.state.offset + 20}, () => {
+            this.getPokemon();
+        })
+    }
 
+    /* If search functionality is ever used, only fetching all pokemon once */
     searchPokemon(){
-        //if search functionality is ever used, only fetching all pokemon once
         console.log(this.state.searchInput);
         if(this.state.searchInput != "" && this.state.searchAll.length == 0){
             fetch('https://pokeapi.co/api/v2/pokemon/?limit=1118')
@@ -72,10 +79,18 @@ class App extends Component {
 
     searchInput(event){this.setState({searchInput : event.target.value})}
 
+    handleClearSearch(){
+        this.setState({searchInput : ""}, () => {
+            this.searchPokemon();
+        });
+    }
+
     filterBy(filter){ this.setState({filter : filter, selected : {}});}
 
+    /* Details retrieved from rendering of Pokemon cards, to be passed onto Pokemon Details card if selected */
     pokemonDetails(details){this.setState({selected: details});}
 
+    /* Add Pokemon name to array of captured Pokemon kept in component state */
     capture(e, name){
         e.stopPropagation();
         var captured = Array.from(this.state.captured);
@@ -85,24 +100,13 @@ class App extends Component {
         this.setState({captured : captured});
     }
 
-    showMore(){ 
-        this.setState({offset : this.state.offset + 20}, () => {
-            this.getPokemon();
-        })
-    }
-
-    handleClearSearch(){
-        this.setState({searchInput : ""}, () => {
-            this.searchPokemon();
-        });
-    }
-
     render(){
 
         const isCaptured = (name) => {return (this.state.captured.findIndex(capName => capName == name) != -1)}
 
         var pokemonList = [];
 
+        /* Filters results */
         if(this.state.filter == "all"){
             pokemonList = this.state.pokemon.map(pokemon => {
                 return (<Pokemon key={pokemon.name} name={pokemon.name} isSelected={this.state.selected.name && this.state.selected.name == pokemon.name} isCaptured={isCaptured(pokemon.name)} capture={(e) => this.capture(e, pokemon.name)} pokemonDetails={this.pokemonDetails}/>)
@@ -118,6 +122,7 @@ class App extends Component {
             })
         }
 
+        /* Checks cases and generates appropriate message to display */
         var message = [];
 
         if(this.state.captured.length == 0 && this.state.filter == "captured"){

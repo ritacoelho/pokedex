@@ -21,6 +21,7 @@ const PokemonDetails = ({pokemon, captured, captureFn}) => {
         setPosition("front");
     }, [pokemon])
 
+    /* Determine whether Pokemon details have female images */
     var sprites = {male:{}, female:{}};
     for(const [key, value] of Object.entries(pokemon.sprites)){
         if(value != null){
@@ -51,7 +52,7 @@ const PokemonDetails = ({pokemon, captured, captureFn}) => {
         position == "front" ? setPosition("back") : setPosition("front");
     }
 
-    //function returns hex color value from string gotten from http://jsfiddle.net/sUK45/
+    /* function returns hex color value from string gotten from http://jsfiddle.net/sUK45/ */
     var stringToColour = function(str) {
         var hash = 0;
         for (var i = 0; i < str.length; i++) {
@@ -65,16 +66,13 @@ const PokemonDetails = ({pokemon, captured, captureFn}) => {
         return colour;
     }
 
+    /* Define "ability" elements  */
     var abilityList = [];
     pokemon.abilities.forEach(ability => {
         if(ability.is_hidden){
             abilityList.push(
                 <Tooltip key={ability.ability.name} title="Hidden" placement="right" disableInteractive>
-                    <div 
-                     
-                    className="ability">
-                        {ability.ability.name}
-                    </div>
+                    <div className="ability">{ability.ability.name}</div>
                 </Tooltip>
             )
         }else {
@@ -87,13 +85,14 @@ const PokemonDetails = ({pokemon, captured, captureFn}) => {
         }
     });
 
+    /* Define "type" elements */
     var typeList = [];
     pokemon.types.forEach(type => {
         typeList.push(<Type key={type.type.name} name={type.type.name}/>)
     });
 
+    /* Define gender button if Pokemon details has both genders */
     var genderButton = [];
-
     if(Object.keys(sprites.female).length > 0 && gender == "male") genderButton.push(<MaleIcon key="gender-button" className="gender-button" onClick={() => toggleGender()}/>);
     else if(Object.keys(sprites.female).length > 0 && gender == "female") genderButton.push(<FemaleIcon key="gender-button" className="gender-button" onClick={() => toggleGender()}/>);
     

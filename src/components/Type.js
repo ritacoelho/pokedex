@@ -4,6 +4,7 @@ import '../css/Misc.css';
 
 const Type = ({name}) => {
 
+    /* Map of colors per type (as picked from the ones in the Pokemon games) */
     function typeColor() {
         switch (name) {
             case "normal": return "#A7A977"
