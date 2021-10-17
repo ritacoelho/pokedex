@@ -5,7 +5,7 @@ Simple reproduction of a Pokedex using PokéAPI (https://pokeapi.co/).
 
 Run `npm install` in the root directory of this project to install the necessary packages.
 Run `npm start` to launch the application.
-Open your browser on localhost:8080.
+Open your browser on **localhost:8080**.
 
 ### Exercise requirements
 
