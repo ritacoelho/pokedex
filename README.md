@@ -3,7 +3,8 @@ Simple reproduction of a Pokedex using PokéAPI (https://pokeapi.co/).
 
 ### Running this project
 
-Run `npm start` in the root directory of this project.
+Run `npm install` in the root directory of this project to install the necessary packages.
+Run `npm start` to launch the application.
 Open your browser on localhost:8080.
 
 ### Exercise requirements
@@ -13,7 +14,7 @@ Open your browser on localhost:8080.
 3. Ability to set Pokemon as captured from the details page and the overall list.
 4. Filter list of Pokemon by *All*, *Captured* and *Not Captured*.
 
-**Bonus** Ability to search Pokemon from the home page.
+**Bonus:** Ability to search Pokemon from the home page.
 
 ### Notes
 
