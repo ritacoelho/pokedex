@@ -34,12 +34,13 @@ class Pokemon extends Component {
             <button className="capture-button" onClick={(e) => this.props.capture(e, this.props.name)}> {this.props.isCaptured ? <>Captured</> : <>Capture</>}</button>
         }
         return(
-            <main className="pokemon-card" onClick={() => this.selectPokemon(this.props.name)}>
+            <main className={this.props.isSelected ? "selected-pokemon-card" : "pokemon-card"} onClick={() => this.selectPokemon(this.props.name)}>
                 <div className="card-header">
+                    <div className="poke-id">#{this.state.details.id}</div>
                     <CaptureButton captured={this.props.isCaptured} captureFn={(e) => this.props.capture(e, this.props.name)}/>
                 </div>
                 {this.state.details.sprites ? <img src={this.state.details.sprites.front_default} alt={this.state.details.name}></img> : null}
-                <div>{this.state.details.name}</div>
+                <div style={{"textAlign" : "center"}}>{this.props.name.charAt(0).toUpperCase() + this.props.name.slice(1)}</div>
             </main>
         )
     }

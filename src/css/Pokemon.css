@@ -1,5 +1,6 @@
-.pokemon-card{
-    /* border: 1px solid black; */
+.pokemon-card, .selected-pokemon-card{
+    position: relative;
+    overflow: hidden;
     border-radius: 10px;
     width:118px;
     height: 157px;
@@ -14,11 +15,47 @@
     0 8.8px 10.4px rgba(0, 0, 0, 0.086),
     0 10px 12px rgba(0, 0, 0, 0.12)
     ;
+    font-weight: 500;
+}
+
+.selected-pokemon-card{
+    color: white;
+    font-weight: 700;
+    background-color: var(--transparent-yellow);
+}
+
+/* Shiny effect adapted from https://codepen.io/arlinacode/pen/zxVMPX */
+.selected-pokemon-card:before{
+    content:'';
+    position:absolute;
+    width:200%;
+    height:50%;
+    top:-30%;
+    right:-30%;
+    background:rgba(255,255,255,0.3);
+    background:
+        linear-gradient(
+        top,
+        rgba(255,255,255,0.1),
+        rgba(255,255,255,0.3)
+        );
+    ;
+    transform:rotate(30deg);
+    border-bottom-left-radius:200px 20px;
+    border-bottom-right-radius: 200px 10px;
+    border-top-right-radius:5px 100px;
 }
 
 .card-header{
     width: 100%;
     display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;;
+}
+
+.poke-id{
+    font-size: small;
+    font-weight: 500;
+    margin-left: 2px;
 }

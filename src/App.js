@@ -3,6 +3,10 @@ import {Component} from 'react';
 
 import Pokemon from './components/Pokemon';
 import PokemonDetails from './components/PokemonDetails';
+import SearchBar from './components/SearchBar';
+import FilterBar from './components/FilterBar';
+
+import Pokeball from './images/pokeball.jpeg';
 
 import './App.css';
 
@@ -15,21 +19,22 @@ class App extends Component {
             pokemon : [],
             searchAll: [],
             searchInput : "",
+            currentSearch: "",
             selected : {},
             captured : [],
             filter : "all",
-            offset : 0
+            offset : 0,
+            error: ""
         }
         this.searchInput = this.searchInput.bind(this);
         this.filterBy = this.filterBy.bind(this);
         this.showMore = this.showMore.bind(this);
         this.pokemonDetails = this.pokemonDetails.bind(this);
         this.searchPokemon = this.searchPokemon.bind(this);
-        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleClearSearch = this.handleClearSearch.bind(this);
     }
 
     componentDidMount(){
-        this.mounted = true;
         this.getPokemon();
     }
 
@@ -40,6 +45,10 @@ class App extends Component {
             console.log(data);
             var results = this.state.pokemon.concat(data.results);
             this.setState({pokemon : results});
+        })
+        .catch(error => {
+            console.error(error);
+            this.setState({error: "There has been an issue fetching pokemon."})
         });
     }
 
@@ -50,20 +59,22 @@ class App extends Component {
             fetch('https://pokeapi.co/api/v2/pokemon/?limit=1118')
             .then(response => response.json())
             .then(data => {
-                var results = data.results.filter(pokemon => pokemon.name.includes(this.state.searchInput));
-                this.setState({searchAll : data.results, pokemon : results});
+                var re = new RegExp(this.state.searchInput, 'i')
+                var results = data.results.filter(pokemon => pokemon.name.match(re));
+                this.setState({searchAll : data.results, currentSearch : this.state.searchInput, pokemon : results, selected : {}});
             });
         } else if(this.state.searchInput != ""){
-            var results = this.state.searchAll.filter(pokemon => pokemon.name.includes(this.state.searchInput));
-            this.setState({pokemon : results});
-        } else {this.setState({pokemon: [], offset: 0});
+            var re = new RegExp(this.state.searchInput, 'i')
+            var results = this.state.searchAll.filter(pokemon => pokemon.name.match(re));
+            this.setState({pokemon : results, currentSearch : this.state.searchInput, selected : {}});
+        } else {this.setState({pokemon: [], currentSearch : "", offset: 0, selected : {}});
             this.getPokemon();
         };
     }
 
-    searchInput(event){this.setState({searchInput : event.target.value})}//this.searchPokemon(event.target.value)}
+    searchInput(event){this.setState({searchInput : event.target.value})}
 
-    filterBy(event){ this.setState({filter : event.target.value});}
+    filterBy(filter){ this.setState({filter : filter, selected : {}});}
 
     pokemonDetails(details){this.setState({selected: details});}
 
@@ -82,10 +93,10 @@ class App extends Component {
         })
     }
 
-    handleKeyDown(event){
-        if(event.key == "Enter"){
+    handleClearSearch(){
+        this.setState({searchInput : ""}, () => {
             this.searchPokemon();
-        }
+        });
     }
 
     render(){
@@ -96,49 +107,55 @@ class App extends Component {
 
         if(this.state.filter == "all"){
             pokemonList = this.state.pokemon.map(pokemon => {
-                return (<div key={pokemon.name}>
-                            <Pokemon name={pokemon.name} isCaptured={isCaptured(pokemon.name)} capture={(e) => this.capture(e, pokemon.name)} pokemonDetails={this.pokemonDetails}/>
-                        </div>)
+                return (<Pokemon key={pokemon.name} name={pokemon.name} isSelected={this.state.selected.name && this.state.selected.name == pokemon.name} isCaptured={isCaptured(pokemon.name)} capture={(e) => this.capture(e, pokemon.name)} pokemonDetails={this.pokemonDetails}/>)
             })
         } else if(this.state.filter == "not captured") {
             const results = this.state.pokemon.filter(pokemon => this.state.captured.find(capName => capName == pokemon.name) == undefined );
             pokemonList = results.map(pokemon => {
-                return (<div key={pokemon.name}>
-                            <Pokemon name={pokemon.name} isCaptured={false} capture={(e) => this.capture(e, pokemon.name)} pokemonDetails={this.pokemonDetails}/>
-                        </div>)
+                return (<Pokemon key={pokemon.name} name={pokemon.name} isSelected={this.state.selected.name && this.state.selected.name == pokemon.name} isCaptured={false} capture={(e) => this.capture(e, pokemon.name)} pokemonDetails={this.pokemonDetails}/>)
             })
         } else {
             pokemonList = this.state.captured.map(name => {
-                return (<div key={name}>
-                            <Pokemon name={name} isCaptured={true} capture={(e) => this.capture(e, name)} pokemonDetails={this.pokemonDetails}/>
-                        </div>)
+                return (<Pokemon key={name} name={name} isSelected={this.state.selected.name && this.state.selected.name == name} isCaptured={true} capture={(e) => this.capture(e, name)} pokemonDetails={this.pokemonDetails}/>)
             })
+        }
+
+        var message = [];
+
+        if(this.state.captured.length == 0 && this.state.filter == "captured"){
+            message.push(<div key="no-captured" className="message">You haven't caught any Pokemon yet, go get 'em!</div>)
+        } else if(this.state.error == "" && this.state.pokemon.length == 0 && this.state.currentSearch == "" && this.state.filter == "not captured"){
+            message.push(<div key="all-captured" className="message">Congratulations! You've caught 'em all!</div>)
+        } else if(this.state.currentSearch != "" && this.state.pokemon.length > 0){
+            message.push(<div key="search-results" className="message">Showing results for "{this.state.currentSearch}"</div>)
+        } else if(this.state.currentSearch != "" && this.state.pokemon.length == 0){
+            message.push(<div key="no-results" className="message">No results found for "{this.state.currentSearch}"</div>)
+        } else if(this.state.error != ""){
+            message.push(<div key="error" className="message">Oops! There seems to have been an issue fetching Pokemon, please try again later.</div>)
         }
 
         return(
             <main className="app-container">
                 <div className="app-header">
-                    <div className="app-header-controls">
-                        <select onChange={this.filterBy}>
-                            <option>all</option>
-                            <option>captured</option>
-                            <option>not captured</option>
-                        </select>
+                    <div className="app-header-filter">
+                        <FilterBar filter={this.state.filter} setFilter={this.filterBy}/>
                     </div>
-                    <div className="app-header-name">Pokédex</div>
-                    <div className="app-header-controls">
-                        <input type="text" placeholder="Search..." onChange={this.searchInput} onKeyDown={this.handleKeyDown}></input>
-                        <button type="button" onClick={this.searchPokemon}>OK</button>
+                    <div className="app-header-name" onClick={() => window.location.reload()}>Pokédex</div>
+                    <div className="app-header-search">
+                        <SearchBar input={this.state.searchInput} currentSearch={this.state.currentSearch} onChange={this.searchInput} onSubmit={this.searchPokemon} onClear={this.handleClearSearch}/>
                     </div>
                 </div>
+                {message}
                 <div className="app-body">
-                    <div className="left-side">
-                        {pokemonList}
-                        {this.state.pokemon.length < 1118 && this.state.pokemon.length >= 20 && this.state.filter != "captured" && this.state.searchInput == "" ? 
-                            <div className="show-more" onClick={this.showMore}>+</div> 
-                        : null}
+                    <div className="app-body-section">
+                        <div className="pokemon-list">
+                            {pokemonList}
+                            {this.state.pokemon.length < 1118 && this.state.pokemon.length >= 20 && this.state.filter != "captured" && this.state.currentSearch == "" ? 
+                                <div className="show-more" onClick={this.showMore}>+</div> 
+                            : null}
+                        </div>
                     </div>
-                    <div className="right-side">
+                    <div className="app-body-section">
                         {Object.keys(this.state.selected).length != 0 ? 
                             <PokemonDetails pokemon={this.state.selected} captured={isCaptured(this.state.selected.name)} captureFn={(e) => this.capture(e, this.state.selected.name)}/>
                         :
@@ -146,6 +163,7 @@ class App extends Component {
                         }
                     </div>
                 </div>
+                <img src={Pokeball} className="app-pokeball"/>
                 <div className="app-footer">
                 </div>
             </main>

@@ -15,3 +15,72 @@
     color:white;
     text-align: center;
 }
+
+.control-bar{
+    background: transparent;
+    border-radius: 5px; 
+    box-shadow: inset 1px 1px 4px 2px var(--light-grey);
+    display: flex;
+    align-items: center;
+    overflow:hidden
+}
+
+.text-input{
+    margin-left: 10px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: var(--dark-grey);
+}
+
+.search-icon{
+    cursor: pointer;
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    transition: all 0.1s ease-in-out;
+}
+
+.search-icon:hover{
+    background-color: var(--primary-yellow);
+    transition: all 0.1s ease-in-out;
+}
+
+.cancel-icon{
+    cursor: pointer;
+    color: var(--grey);
+    margin-right: 5px;
+    transition: all 0.1s ease-in-out;
+}
+
+.cancel-icon:hover{
+    color: var(--dark-grey);
+    transition: all 0.1s ease-in-out;
+}
+
+.filter, .selected-filter{
+    font-size: small;
+    font-weight: 600;
+    padding: 0px 10px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+}
+
+.filter:hover{
+    /* color: white;
+    background-color: #247ba049; */
+    background-color: var(--transparent-blue);
+    transition: all 0.1s ease-in-out;
+}
+
+.selected-filter{
+    color: white;
+    background-color: var(--primary-blue);
+}
