@@ -6,6 +6,9 @@ const htmlPlugin = new HtmlWebPackPlugin({
  favicon: "./public/favicon.ico"
 });
 module.exports = {
+ output: {
+    hashFunction : 'xxhash64'
+  },
   devServer: {
     static: {directory: path.join(__dirname, 'public')},
     compress: true,
